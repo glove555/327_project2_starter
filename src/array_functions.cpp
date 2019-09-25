@@ -11,6 +11,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <array>
 #include <string>
 #include <time.h>
 #include "constants.h"
@@ -30,17 +31,28 @@ struct track
 };
 //TODO add a global array of entry structs (global to this file)
 track myTrack[constants::MAX_WORDS];
+
 //TODO add variable to keep track of next available slot in array
 int next;
 //TODO define all functions in header file
 //zero out array that tracks words and their occurrences
 void clearArray(){
-
+	char testName[MAX_WORDS];
+	std::fill(std::begin(testName), std::end(testName), '\0');
 }
-
 //how many unique words are in array
 int getArraySize(){
-	return 0;
+	//I need to get rid of the bad chars here!
+	int size = 0;
+	int count =0;
+	for (int i = 0; (unsigned)i < sizeof(myTrack); i++){
+		size =+ 1;
+		}
+	return size;
+	while(!end(myTrack)){
+		count += 1;
+		return count;
+	}
 }
 
 //get data at a particular location
@@ -56,12 +68,28 @@ int getArrayWord_NumbOccur_At(int i){
  * returns false: myfstream is not open
  *         true: otherwise*/
 bool processFile(std::fstream &myfstream){
-	return false;
+	string line;
+	if (!myfstream.is_open()){
+		return false;
+	}
+	while(!(myfstream.eof())){
+		getline(myfstream, line);
+		processLine(line);
+	}
+	return true;
 }
 
 /*take 1 line and extract all the tokens from it
 feed each token to processToken for recording*/
 void processLine(std::string &myString){
+	strip_unwanted_chars(myString);
+	stringstream ss(myString);
+	string tempToken;
+
+	while(getline(ss, tempToken, CHAR_TO_SEARCH_FOR)){
+		processToken(tempToken);
+	}
+
 
 }
 
@@ -73,7 +101,12 @@ void processToken(std::string &token){
 /*if you are debugging the file must be in the project parent directory
   in this case Project2 with the .project and .cProject files*/
 bool openFile(std::fstream& myfile, const std::string& myFileName,
-		std::ios_base::openmode mode){
+		std::ios_base::openmode mode) {
+
+	myfile.open(myFileName.c_str());
+	if (!(myfile.is_open())){
+		return false;
+	}
 	return true;
 }
 
@@ -90,6 +123,12 @@ void closeFile(std::fstream& myfile){
  * 			SUCCESS if all data is written and outputfilename closes OK
  * */
 int writeArraytoFile(const std::string &outputfilename){
+//	ofstream myOutputfile;
+//	myOutputfile.open(outputfilename.c_str());
+//	if (!myOutputfile.is_open())
+//			return false;
+//	myOutputfile << myTrack;
+//	myOutputfile.close();
 	return 0;
 }
 
