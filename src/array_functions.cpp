@@ -37,7 +37,11 @@ int nxt;
 //TODO define all functions in header file
 //zero out array that tracks words and their occurrences
 void clearArray(){
-	nxt = 0;
+	for (int i = 0; i < MAX_WORDS; i++){
+		myTrack[i].word = " ";
+		myTrack[i].num_occ = 0;
+		nxt = 0;
+		}
 }
 //how many unique words are in array
 int getArraySize(){
@@ -80,11 +84,22 @@ void processLine(std::string &myString){
 /*Keep track of how many times each token seen*/
 void processToken(std::string &token) {
 	myTrack[nxt].num_occ = 0;
-	strip_unwanted_chars(token);
+
+	string upper = token;
+	strip_unwanted_chars(upper);
+	toUpper(upper);
 
 	for(int i = 0; (unsigned)i < MAX_WORDS; i++) {
-		if(myTrack[i].word == token) {
+		string str = myTrack[i].word;
+		toUpper(str);
+		if(str == upper) {
 			myTrack[i].num_occ++;
+//		}
+////		else{
+////			myTrack[i].word = new track();
+			//in for loop, and each word individually; already in the array
+			//Comparing it to each individual token
+			//keep only one struct
 		}
 	}
 	myTrack[nxt].word + " " = token; // adds word to array
@@ -98,7 +113,7 @@ void processToken(std::string &token) {
 bool openFile(std::fstream& myfile, const std::string& myFileName,
 		std::ios_base::openmode ) {
 
-	myfile.open(myFileName);
+	myfile.open(myFileName.c_str());
 	if (!(myfile.is_open())){
 		return false;
 	}
@@ -124,9 +139,9 @@ int writeArraytoFile(const std::string &outputfilename){
 		return FAIL_FILE_DID_NOT_OPEN;
 	if (nxt == 0){
 		return FAIL_NO_ARRAY_DATA;
-
-//	if( (myOutputfile << myTrack) && (myOutputfile.close())){
+//	if(myOutputfile.close()){
 //		return SUCCESS;
+//	}
 	}
 	return 0;
 }
