@@ -143,7 +143,7 @@ int writeArraytoFile(const std::string &outputfilename){
 	}
 	else{
 		for (int i=0; i < nxt; i++){
-			myOutputfile << myTrack[i].word << ' ' << myTrack[i].num_occ << '\n' << endl;
+			myOutputfile << myTrack[i].word << " " << myTrack[i].num_occ << endl;
 		}
 	myOutputfile.close();
 	return SUCCESS;
@@ -156,15 +156,18 @@ int writeArraytoFile(const std::string &outputfilename){
  */
 void sortArray(constants::sortOrder so){
 	switch (so){
-		case NONE:{
+		case NONE:
 			break;
-		}
-		case ASCENDING:{
+
+		case ASCENDING:
 			for(int i = 0; i < nxt - 1; i++){
 				for (int j = i + 1; j < nxt; j++){
-					//compard the two words to see which is bigger
+					//compare the two words to see which is bigger
+
 					string w1 = myTrack[i].word;
 					string w2 = myTrack[j].word;
+					toUpper(w1);
+					toUpper(w2);
 					if (w1 > w2){
 						//the temp will become the lesser value
 						track temp = myTrack[i];
@@ -174,8 +177,7 @@ void sortArray(constants::sortOrder so){
 				}
 			}
 			break;
-		}
-		case DESCENDING:{
+		case DESCENDING:
 //			for(int i = 0; i < nxt - 1; i++){
 //				for (int j = i + 1; j < nxt; j++){
 //					string w1 = myTrack[i].word;
@@ -186,11 +188,10 @@ void sortArray(constants::sortOrder so){
 //						myTrack[i] = temp;
 //					}
 //				}
-//			}
+//
 			//this one does not matter --> not being tested at all.
 			break;
-		}
-		case NUMBER_OCCURRENCES:{
+		case NUMBER_OCCURRENCES:
 			for (int i = 0; i < nxt; i++){
 				for (int j = 0; j < nxt; j++){
 					int n1 = myTrack[i].num_occ;
@@ -203,7 +204,6 @@ void sortArray(constants::sortOrder so){
 				}
 			}
 			break;
-		}
 	}
 }
 //TODO look in utilities.h for useful functions, particularly strip_unwanted_chars!
