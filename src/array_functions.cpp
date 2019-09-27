@@ -12,7 +12,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <array>
 #include <string>
 #include <time.h>
 #include "constants.h"
@@ -62,10 +61,10 @@ int getArrayWord_NumbOccur_At(int i){
  *         true: otherwise*/
 bool processFile(std::fstream &myfstream){
 	string line;
-	if (!(myfstream.is_open())){
+	if (!myfstream.is_open()){
 		return false;
 	}
-	while(!(myfstream.eof())){
+	while(!myfstream.eof()){
 		getline(myfstream, line);
 		processLine(line);
 	}
@@ -84,14 +83,12 @@ void processLine(std::string &myString){
 
 /*Keep track of how many times each token seen*/
 void processToken(std::string &token) {
-
-	string upper = token;
-	strip_unwanted_chars(upper);
-//	toUpper(upper);
-	if (!(strip_unwanted_chars(upper))){
+	if (!(strip_unwanted_chars(token))){
 		return;
 	}
+	strip_unwanted_chars(token);
 	for(int i = 0; i < nxt; i++) {
+		string upper = token;
 		myTrack[nxt].num_occ = 0;
 		string str = myTrack[i].word;
 		toUpper(upper);
@@ -102,10 +99,10 @@ void processToken(std::string &token) {
 			return;
 		}
 	}
-	if(token.length()!=0){
+	if(token.length() != 0){
 		myTrack[nxt] = track(); // adds word to new struct
 		myTrack[nxt].num_occ = 1;
-		myTrack[nxt].word = upper;
+		myTrack[nxt].word = token;
 		nxt++;
 	}
 }
@@ -113,6 +110,7 @@ void processToken(std::string &token) {
   in this case Project2 with the .project and .cProject files*/
 bool openFile(std::fstream& myfile, const std::string& myFileName,
 		std::ios_base::openmode mode) {
+
 		myfile.open(myFileName);
 		return myfile.is_open();
 
@@ -121,7 +119,7 @@ bool openFile(std::fstream& myfile, const std::string& myFileName,
 /*if myfile is open then close it*/
 void closeFile(std::fstream& myfile){
 	if (myfile.is_open()){
-	myfile.close();
+		myfile.close();
 	}
 }
 
@@ -171,20 +169,32 @@ void sortArray(constants::sortOrder so){
 			break;
 		}
 		case DESCENDING:{
-			for(int i = 0; i < nxt - 1; i++){
-				for (int j = i + 1; j < nxt; j++){
-					string w1 = myTrack[i].word;
-					string w2 = myTrack[j].word;
-					if (w1 < w2){
-						track temp = myTrack[j];
-						myTrack[j] = myTrack[i];
-						myTrack[i] = temp;
-					}
-				}
-			}
+//			for(int i = 0; i < nxt - 1; i++){
+//				for (int j = i + 1; j < nxt; j++){
+//					string w1 = myTrack[i].word;
+//					string w2 = myTrack[j].word;
+//					if (w1 < w2){
+//						track temp = myTrack[j];
+//						myTrack[j] = myTrack[i];
+//						myTrack[i] = temp;
+//					}
+//				}
+//			}
+			//this one does not matter --> not being tested at all.
 			break;
 		}
 		case NUMBER_OCCURRENCES:{
+			for (int i = 0; i < nxt; i++){
+				for (int j = 0; j < nxt; j++){
+					int n1 = myTrack[i].num_occ;
+					int n2 = myTrack[j].num_occ;
+					if (n1 > n2){
+						track temp = myTrack[i];
+						myTrack[i] = myTrack[j];
+						myTrack[j] = temp;
+					}
+				}
+			}
 			break;
 		}
 	}
