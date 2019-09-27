@@ -3,6 +3,7 @@
  *
  *  Created on: Sep 10, 2017
  *      Author: keith
+ *
  */
 
 //============================================================================
@@ -37,21 +38,20 @@ int nxt;
 //TODO define all functions in header file
 //zero out array that tracks words and their occurrences
 void clearArray(){
-	for (int i = 0; i < MAX_WORDS; i++){
-		myTrack[i].word = " ";
-		myTrack[i].num_occ = 0;
-		nxt = 0;
-		}
+//decided to use this again... It should work. Need to pass processToken first
+	nxt = 0;
 }
-//how many unique words are in array
+//how many unique words are in array?
 int getArraySize(){
 	return nxt;
 }
 
 //get data at a particular location
+//return the word in array
 std::string getArrayWordAt(int i){
 	return myTrack[i].word;
 }
+//return the num_occ array
 int getArrayWord_NumbOccur_At(int i){
 	return myTrack[i].num_occ;
 }
@@ -62,10 +62,11 @@ int getArrayWord_NumbOccur_At(int i){
  *         true: otherwise*/
 bool processFile(std::fstream &myfstream){
 	string line;
-	if (!myfstream.is_open()){
+	if (!(myfstream.is_open())){
 		return false;
 	}
-	while(getline(myfstream, line)){
+	while(!(myfstream.eof())){
+		getline(myfstream, line);
 		processLine(line);
 	}
 	return true;
@@ -75,56 +76,53 @@ bool processFile(std::fstream &myfstream){
 feed each token to processToken for recording*/
 void processLine(std::string &myString){
 	stringstream ss(myString);
-	string tempToken;
-	while(getline(ss, tempToken, CHAR_TO_SEARCH_FOR)){
-		processToken(tempToken);
+	string temptoken;
+	while(getline(ss, temptoken, CHAR_TO_SEARCH_FOR)){
+		processToken(temptoken);
 	}
 }
 
 /*Keep track of how many times each token seen*/
 void processToken(std::string &token) {
-	myTrack[nxt].num_occ = 0;
 
 	string upper = token;
 	strip_unwanted_chars(upper);
-	toUpper(upper);
-
-	for(int i = 0; (unsigned)i < MAX_WORDS; i++) {
+//	toUpper(upper);
+	if (!(strip_unwanted_chars(upper))){
+		return;
+	}
+	for(int i = 0; i < nxt; i++) {
+		myTrack[nxt].num_occ = 0;
 		string str = myTrack[i].word;
+		toUpper(upper);
 		toUpper(str);
+
 		if(str == upper) {
 			myTrack[i].num_occ++;
-//		}
-////		else{
-////			myTrack[i].word = new track();
-			//in for loop, and each word individually; already in the array
-			//Comparing it to each individual token
-			//keep only one struct
+			return;
 		}
 	}
-	myTrack[nxt].word + " " = token; // adds word to array
-	myTrack[nxt].num_occ += 1;
-	nxt++;
-
-//	cout << myTrack[nxt-1].word;
+	if(token.length()!=0){
+		myTrack[nxt] = track(); // adds word to new struct
+		myTrack[nxt].num_occ = 1;
+		myTrack[nxt].word = upper;
+		nxt++;
+	}
 }
 /*if you are debugging the file must be in the project parent directory
   in this case Project2 with the .project and .cProject files*/
 bool openFile(std::fstream& myfile, const std::string& myFileName,
-		std::ios_base::openmode ) {
+		std::ios_base::openmode mode) {
+		myfile.open(myFileName);
+		return myfile.is_open();
 
-	myfile.open(myFileName.c_str());
-	if (!(myfile.is_open())){
-		return false;
-	}
-	else{
-		return true;
-	}
 }
 
 /*if myfile is open then close it*/
 void closeFile(std::fstream& myfile){
-		myfile.close();
+	if (myfile.is_open()){
+	myfile.close();
+	}
 }
 
 /* serializes all content in myEntryArray to file outputfilename
@@ -139,20 +137,45 @@ int writeArraytoFile(const std::string &outputfilename){
 		return FAIL_FILE_DID_NOT_OPEN;
 	if (nxt == 0){
 		return FAIL_NO_ARRAY_DATA;
-//	if(myOutputfile.close()){
-//		return SUCCESS;
-//	}
 	}
-	return 0;
+	else{
+		for (int i=0; i < nxt; i++){
+			myOutputfile << myTrack[i].word << ' ' << myTrack[i].num_occ << '\n' << endl;
+		}
+	myOutputfile.close();
+	return SUCCESS;
 }
-
+}
 /*
  * Sort myEntryArray based on so enum value.
  * You must provide a solution that handles alphabetic sorting (A-Z)
  * The presence of the enum implies a switch statement based on its value
  */
 void sortArray(constants::sortOrder so){
-
+	switch (so){
+		case NONE:{
+			break;
+		}
+		case ASCENDING:{
+			for(int i = 0; i < nxt - 1; i++){
+				for (int j = i + 1; j < nxt; j++){
+					string w1 = myTrack[i].word;
+					string w2 = myTrack[j].word;
+					if (w1 > w2){
+						track temp = myTrack[i];
+						myTrack[i] = myTrack[j];
+						myTrack[j] = temp;
+					}
+				}
+			}
+			break;
+		}
+		case DESCENDING:{
+			break;
+		}
+		case NUMBER_OCCURRENCES:{
+			break;
+		}
+	}
 }
-
 //TODO look in utilities.h for useful functions, particularly strip_unwanted_chars!
