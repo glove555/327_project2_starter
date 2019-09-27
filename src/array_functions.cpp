@@ -171,6 +171,17 @@ void sortArray(constants::sortOrder so){
 			break;
 		}
 		case DESCENDING:{
+			for(int i = 0; i < nxt - 1; i++){
+				for (int j = i + 1; j < nxt; j++){
+					string w1 = myTrack[i].word;
+					string w2 = myTrack[j].word;
+					if (w1 < w2){
+						track temp = myTrack[j];
+						myTrack[j] = myTrack[i];
+						myTrack[i] = temp;
+					}
+				}
+			}
 			break;
 		}
 		case NUMBER_OCCURRENCES:{
