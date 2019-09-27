@@ -110,7 +110,12 @@ void processToken(std::string &token) {
   in this case Project2 with the .project and .cProject files*/
 bool openFile(std::fstream& myfile, const std::string& myFileName,
 		std::ios_base::openmode mode) {
-
+//	if ( myfile.peek() == std::ifstream::traits_type::eof() )
+//	{
+//	   // Empty File
+//		return false;
+//
+//	}
 		myfile.open(myFileName);
 		return myfile.is_open();
 
@@ -157,9 +162,11 @@ void sortArray(constants::sortOrder so){
 		case ASCENDING:{
 			for(int i = 0; i < nxt - 1; i++){
 				for (int j = i + 1; j < nxt; j++){
+					//compard the two words to see which is bigger
 					string w1 = myTrack[i].word;
 					string w2 = myTrack[j].word;
 					if (w1 > w2){
+						//the temp will become the lesser value
 						track temp = myTrack[i];
 						myTrack[i] = myTrack[j];
 						myTrack[j] = temp;
